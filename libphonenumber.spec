@@ -38,25 +38,23 @@ BuildRequires:	pkgconfig(icu-i18n) >= 4.4
 BuildRequires:	boost-devel
 
 # java libraries
-BuildRequires:	java-rpmbuild
-BuildRequires:	maven-local
-BuildRequires:	tomcat-servlet-3.0-api
-BuildRequires:	protobuf-java
-BuildRequires:	apache-commons-fileupload
-BuildRequires:	mvn(org.codehaus.mojo:exec-maven-plugin)
-
-BuildRequires:	maven-local
-BuildRequires:	mvn(com.google.protobuf:protobuf-java)
-BuildRequires:	mvn(commons-fileupload:commons-fileupload) 
-BuildRequires:	mvn(javax.servlet:servlet-api)
-BuildRequires:	mvn(junit:junit)
-BuildRequires:	mvn(org.apache.commons:commons-io)
-BuildRequires:	mvn(org.apache.maven.plugins:maven-antrun-plugin)
-BuildRequires:	mvn(org.apache.maven.plugins:maven-assembly-plugin)
-BuildRequires:	mvn(org.apache.maven.plugins:maven-release-plugin)
-BuildRequires:	mvn(org.apache.maven.plugins:maven-war-plugin)
-BuildRequires:	mvn(org.codehaus.mojo:build-helper-maven-plugin)
-BuildRequires:	mvn(org.codehaus.mojo:exec-maven-plugin)
+BuildRequires:  maven-local
+BuildRequires:  mvn(com.google.protobuf:protobuf-java)
+BuildRequires:  mvn(commons-fileupload:commons-fileupload)
+BuildRequires:  mvn(commons-io:commons-io)
+BuildRequires:  mvn(commons-lang:commons-lang)
+BuildRequires:  mvn(javax.servlet:servlet-api)
+BuildRequires:  mvn(junit:junit)
+BuildRequires:  mvn(net.kindleit:maven-gae-plugin)
+BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-antrun-plugin)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-assembly-plugin)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-release-plugin)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-source-plugin)
+BuildRequires:  mvn(org.apache.maven.plugins:maven-war-plugin)
+BuildRequires:  mvn(org.codehaus.mojo:build-helper-maven-plugin)
+BuildRequires:  mvn(org.codehaus.mojo:exec-maven-plugin)
+BuildRequires:  mvn(org.mortbay.jetty:maven-jetty-plugin)
 
 %description
 Google's common Java, C++ and JavaScript library for parsing, formatting,
