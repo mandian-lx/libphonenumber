@@ -23,10 +23,10 @@ Source0:	https://github.com/googlei18n/%{name}/archive/v%{version}/%{name}-%{ver
 # https://github.com/googlei18n/libphonenumber/issues/1307
 # https://github.com/googlei18n/libphonenumber/pull/1090
 # https://github.com/gjasny/libphonenumber/commit/45bd90ab3e910a14a82e3889a0b309dd4157a283.patch
-Patch0:		%{name}-8.3.2-libdir.patch
-Patch1:		%{name}-8.3.2-re2.patch
-Patch2:		%{name}-8.3.2-readdir_r.patch
-Patch3:		%{name}-8.3.2-tests.patch
+Patch0:		%{name}-8.3.3-libdir.patch
+Patch1:		%{name}-8.3.3-re2.patch
+Patch2:		%{name}-8.3.3-readdir_r.patch
+Patch3:		%{name}-8.3.3-tests.patch
 
 # cpp library
 BuildRequires:	cmake > 2.8
