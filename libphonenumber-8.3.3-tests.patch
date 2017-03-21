@@ -1,0 +1,8 @@
+--- libphonenumber-8.3.3/tools/cpp/CMakeLists.txt.tests
++++ libphonenumber-8.3.3/tools/cpp/CMakeLists.txt
+@@ -55,4 +55,4 @@
+ # Build the testing binary.
+ include_directories ("test")
+ add_executable (generate_geocoding_data_test ${TEST_SOURCES})
+-target_link_libraries (generate_geocoding_data_test ${TEST_LIBS})
++target_link_libraries (generate_geocoding_data_test ${TEST_LIBS} ${Boost_LIBRARIES})

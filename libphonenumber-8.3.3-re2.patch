@@ -1,0 +1,29 @@
+--- libphonenumber-8.3.3/cpp/src/phonenumbers/regexp_adapter_re2.cc.re2
++++ libphonenumber-8.3.3/cpp/src/phonenumbers/regexp_adapter_re2.cc
+@@ -41,7 +41,7 @@
+     return utf8_input_.ToString();
+   }
+ 
+-  StringPiece* Data() {
++  re2::StringPiece* Data() {
+     return &utf8_input_;
+   }
+ 
+@@ -49,7 +49,7 @@
+   // string_ holds the string referenced by utf8_input_ as StringPiece doesn't
+   // copy the string passed in.
+   const string string_;
+-  StringPiece utf8_input_;
++  re2::StringPiece utf8_input_;
+ };
+ 
+ namespace {
+@@ -96,7 +96,7 @@
+                        string* matched_string2,
+                        string* matched_string3) const {
+     DCHECK(input_string);
+-    StringPiece* utf8_input =
++    re2::StringPiece* utf8_input =
+         static_cast<RE2RegExpInput*>(input_string)->Data();
+ 
+     if (anchor_at_start) {

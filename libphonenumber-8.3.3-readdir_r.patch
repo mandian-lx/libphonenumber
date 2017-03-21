@@ -1,0 +1,139 @@
+From 45bd90ab3e910a14a82e3889a0b309dd4157a283 Mon Sep 17 00:00:00 2001
+From: Gregor Jasny <gjasny@googlemail.com>
+Date: Sat, 23 Apr 2016 13:52:50 +0200
+Subject: [PATCH] Replace POSIX directory operations by Boost Filesystem
+
+Signed-off-by: Gregor Jasny <gjasny@googlemail.com>
+---
+ cpp/CMakeLists.txt                                 |  6 +--
+ tools/cpp/CMakeLists.txt                           |  1 +
+ tools/cpp/src/cpp-build/generate_geocoding_data.cc | 52 +++++++++-------------
+ 3 files changed, 26 insertions(+), 33 deletions(-)
+
+diff --git a/cpp/CMakeLists.txt b/cpp/CMakeLists.txt
+index f2acd86..ab1999f 100644
+--- a/cpp/CMakeLists.txt
++++ b/cpp/CMakeLists.txt
+@@ -82,14 +82,14 @@ if (${USE_ALTERNATE_FORMATS} STREQUAL "ON")
+ endif ()
+ 
+ # Find all the required libraries and programs.
+-if (${USE_BOOST} STREQUAL "ON")
++if (${USE_BOOST} STREQUAL "ON" OR ${BUILD_GEOCODER} STREQUAL "ON")
+   add_definitions ("-DI18N_PHONENUMBERS_USE_BOOST")
+   if (WIN32)
+     set (Boost_USE_STATIC_LIBS ON)
+   endif ()
+-  find_package (Boost 1.40.0 COMPONENTS date_time system thread)
++  find_package (Boost 1.40.0 COMPONENTS date_time filesystem system thread)
+   if (NOT Boost_FOUND)
+-    print_error ("Boost Date_Time/System/Thread" "Boost")
++    print_error ("Boost Date_Time/Filesystem/System/Thread" "Boost")
+   endif ()
+   include_directories (${Boost_INCLUDE_DIRS})
+ endif ()
+diff --git a/tools/cpp/CMakeLists.txt b/tools/cpp/CMakeLists.txt
+index fafa846..7013e7e 100644
+--- a/tools/cpp/CMakeLists.txt
++++ b/tools/cpp/CMakeLists.txt
+@@ -38,6 +38,7 @@ endif ()
+ include_directories ("src")
+ 
+ add_executable (generate_geocoding_data ${SOURCES})
++target_link_libraries (generate_geocoding_data ${Boost_LIBRARIES})
+ 
+ set (TEST_SOURCES
+   "src/cpp-build/generate_geocoding_data.cc"
+diff --git a/tools/cpp/src/cpp-build/generate_geocoding_data.cc b/tools/cpp/src/cpp-build/generate_geocoding_data.cc
+index ef94ef6..2561948 100644
+--- a/tools/cpp/src/cpp-build/generate_geocoding_data.cc
++++ b/tools/cpp/src/cpp-build/generate_geocoding_data.cc
+@@ -16,7 +16,6 @@
+ 
+ #include "cpp-build/generate_geocoding_data.h"
+ 
+-#include <dirent.h>
+ #include <locale>
+ #include <sys/stat.h>
+ #include <algorithm>
+@@ -31,6 +30,7 @@
+ #include <string>
+ #include <utility>
+ #include <vector>
++#include <boost/filesystem.hpp>
+ 
+ #include "base/basictypes.h"
+ 
+@@ -43,6 +43,8 @@ using std::vector;
+ using std::set;
+ using std::pair;
+ 
++namespace fs = boost::filesystem;
++
+ template <typename ResourceType> class AutoCloser {
+  public:
+   typedef int (*ReleaseFunction) (ResourceType* resource);
+@@ -79,7 +81,7 @@ enum DirEntryKinds {
+ 
+ class DirEntry {
+  public:
+-  DirEntry(const char* n, DirEntryKinds k)
++  DirEntry(const std::string& n, DirEntryKinds k)
+       : name_(n),
+         kind_(k)
+   {}
+@@ -96,36 +98,26 @@ class DirEntry {
+ // success.
+ bool ListDirectory(const string& path, vector<DirEntry>* entries) {
+   entries->clear();
+-  DIR* dir = opendir(path.c_str());
+-  if (!dir) {
+-    return false;
+-  }
+-  AutoCloser<DIR> dir_closer(&dir, closedir);
+-  struct dirent entry, *dir_result;
+-  struct stat entry_stat;
+-  while (true) {
+-    const int res = readdir_r(dir, &entry, &dir_result);
+-    if (res) {
+-      return false;
+-    }
+-    if (dir_result == NULL) {
+-      return true;
+-    }
+-    if (strcmp(entry.d_name, ".") == 0 || strcmp(entry.d_name, "..") == 0) {
+-       continue;
+-    }
+-    const string entry_path = path + "/" + entry.d_name;
+-    if (stat(entry_path.c_str(), &entry_stat)) {
+-      return false;
+-    }
+-    DirEntryKinds kind = kFile;
+-    if (S_ISDIR(entry_stat.st_mode)) {
+-      kind = kDirectory;
+-    } else if (!S_ISREG(entry_stat.st_mode)) {
+-      continue;
++
++  try {
++    for (fs::directory_iterator it(path); it != fs::directory_iterator(); ++it) {
++      DirEntryKinds kind;
++
++      if (fs::is_directory(it->status())) {
++          kind = kDirectory;
++      } else if (fs::is_regular_file(it->status())) {
++          kind = kFile;
++      } else {
++          continue;
++      }
++
++      entries->push_back(DirEntry(it->path().filename().string(), kind));
+     }
+-    entries->push_back(DirEntry(entry.d_name, kind));
++  } catch (const fs::filesystem_error& ex) {
++    return false;
+   }
++
++  return true;
+ }
+ 
+ // Returns true if s ends with suffix.
