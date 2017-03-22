@@ -195,8 +195,6 @@ find . -name "*.class" -delete
 %mvn_file ":{*}" %{name}/@1 @1
 
 %build
-%global optflags %{optflags} -Qunused-arguments
-
 # c++ library
 pushd cpp
 %cmake -DUSE_RE2:BOOL=ON
