@@ -171,7 +171,9 @@ find . -name "*.class" -delete
 %pom_remove_parent java/pom.xml
 
 # Remove unpackaged plugins
-%pom_remove_plugin org.codehaus.mojo:animal-sniffer-maven-plugin java/carrier/pom.xml java/demo/pom.xml java/geocoder/pom.xml
+%pom_remove_plugin org.codehaus.mojo:animal-sniffer-maven-plugin java/carrier/pom.xml
+%pom_remove_plugin org.codehaus.mojo:animal-sniffer-maven-plugin java/geocoder/pom.xml
+%pom_remove_plugin org.codehaus.mojo:animal-sniffer-maven-plugin java/internal/prefixmapper/pom.xml
 %pom_remove_plugin org.codehaus.mojo:animal-sniffer-maven-plugin java/libphonenumber/pom.xml
 
 # Fix jar-not-indexed warning
